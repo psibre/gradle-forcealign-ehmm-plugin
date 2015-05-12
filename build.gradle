@@ -69,6 +69,7 @@ processRawResources {
 }
 
 task extractText {
+    dependsOn processRawResources
     inputs.files fileTree(sourceSets.raw.output.resourcesDir).include('cmu_us_slt_arctic/festival/utts/*.utt')
     outputs.files inputs.files.collect {
         "${sourceSets.raw.output.resourcesDir}/cmu_us_slt_arctic/text/${it.name.replace('.utt', '.txt')}"
