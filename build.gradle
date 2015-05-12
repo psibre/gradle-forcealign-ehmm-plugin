@@ -1,0 +1,37 @@
+apply plugin: 'groovy'
+
+repositories.ivy {
+    url 'http://diax.coli.uni-saarland.de/mary/'
+    layout 'pattern', {
+        artifact '[module]-[revision]-[classifier].[ext]'
+    }
+}
+
+configurations.create 'raw'
+
+sourceSets.create 'raw'
+
+dependencies {
+    raw name: 'cmu_us_slt_arctic', version: '0.95', classifier: 'release', ext: 'tar.bz2'
+}
+
+processRawResources {
+    from configurations.raw
+    def packs = []
+    filesMatching '*.tar.*', {
+        packs << tarTree("$destinationDir/$it.name")
+    }
+    filesMatching '*.zip', {
+        packs << zipTree(it.path)
+    }
+    doLast {
+        packs.each { pack ->
+            copy {
+                from pack
+                into destinationDir
+                include(['lab', 'pm', 'mcep', 'utt', 'wav'].collect { "**/*.$it" })
+                includeEmptyDirs = false
+            }
+        }
+    }
+}
