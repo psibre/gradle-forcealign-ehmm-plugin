@@ -114,7 +114,9 @@ task compileEHMM(type: Exec) {
 }
 
 task runEHMMLabeler(type: JavaExec) {
+    dependsOn processRawResources, generateAllophones, compileEHMM
     classpath configurations.ehmm
     main 'marytts.tools.voiceimport.EHMMLabeler'
     workingDir "${sourceSets.raw.output.resourcesDir}/cmu_us_slt_arctic"
+    systemProperties['EHMMDIR'] = "$buildDir/ehmm"
 }
