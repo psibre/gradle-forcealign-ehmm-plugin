@@ -13,7 +13,9 @@ buildscript {
 apply plugin: 'groovy'
 
 repositories {
-    jcenter()
+    maven {
+        url 'https://oss.jfrog.org/artifactory/repo'
+    }
     ivy {
         url 'http://diax.coli.uni-saarland.de/mary/'
         layout 'pattern', {
@@ -31,14 +33,14 @@ sourceSets.create 'raw'
 
 dependencies {
     raw name: 'cmu_us_slt_arctic', version: '0.95', classifier: 'release', ext: 'tar.bz2'
-    ehmm(group: 'de.dfki.mary', name: 'marytts-lang-en', version: '5.1.1') {
+    ehmm(group: 'de.dfki.mary', name: 'marytts-lang-en', version: '5.2-20150512.183956-5') {
         exclude module: 'freetts'
         exclude module: 'freetts-de'
         exclude module: 'freetts-en_us'
         exclude module: 'mwdumper'
         exclude module: 'sgt'
     }
-    ehmm(group: 'de.dfki.mary', name: 'marytts-builder', version: '5.1.1') {
+    ehmm(group: 'de.dfki.mary', name: 'marytts-builder', version: '5.2-20150512.184218-5') {
         exclude module: 'freetts'
         exclude module: 'freetts-de'
         exclude module: 'freetts-en_us'
