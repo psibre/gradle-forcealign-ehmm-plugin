@@ -1,18 +1,38 @@
 apply plugin: 'groovy'
 
-repositories.ivy {
-    url 'http://diax.coli.uni-saarland.de/mary/'
-    layout 'pattern', {
-        artifact '[module]-[revision]-[classifier].[ext]'
+repositories {
+    jcenter()
+    ivy {
+        url 'http://diax.coli.uni-saarland.de/mary/'
+        layout 'pattern', {
+            artifact '[module]-[revision]-[classifier].[ext]'
+        }
     }
 }
 
-configurations.create 'raw'
+configurations {
+    raw
+    ehmm
+}
 
 sourceSets.create 'raw'
 
 dependencies {
     raw name: 'cmu_us_slt_arctic', version: '0.95', classifier: 'release', ext: 'tar.bz2'
+    ehmm(group: 'de.dfki.mary', name: 'marytts-lang-en', version: '5.1.1') {
+        exclude module: 'freetts'
+        exclude module: 'freetts-de'
+        exclude module: 'freetts-en_us'
+        exclude module: 'mwdumper'
+        exclude module: 'sgt'
+    }
+    ehmm(group: 'de.dfki.mary', name: 'marytts-builder', version: '5.1.1') {
+        exclude module: 'freetts'
+        exclude module: 'freetts-de'
+        exclude module: 'freetts-en_us'
+        exclude module: 'mwdumper'
+        exclude module: 'sgt'
+    }
 }
 
 processRawResources {
@@ -34,4 +54,10 @@ processRawResources {
             }
         }
     }
+}
+
+task runEHMMLabeler(type: JavaExec) {
+    classpath configurations.ehmm
+    main 'marytts.tools.voiceimport.EHMMLabeler'
+    workingDir "${sourceSets.raw.output.resourcesDir}/cmu_us_slt_arctic"
 }
