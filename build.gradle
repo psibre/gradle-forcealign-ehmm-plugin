@@ -56,6 +56,17 @@ processRawResources {
     }
 }
 
+task processEHMMSources(type: Copy) {
+    from 'src/ehmm'
+    into "$buildDir/ehmm"
+}
+
+task compileEHMM(type: Exec) {
+    dependsOn processEHMMSources
+    commandLine 'make'
+    workingDir "$buildDir/ehmm"
+}
+
 task runEHMMLabeler(type: JavaExec) {
     classpath configurations.ehmm
     main 'marytts.tools.voiceimport.EHMMLabeler'
