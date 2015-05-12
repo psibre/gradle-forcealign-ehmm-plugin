@@ -56,6 +56,22 @@ processRawResources {
     }
 }
 
+task extractText {
+    inputs.files fileTree(sourceSets.raw.output.resourcesDir).include('cmu_us_slt_arctic/festival/utts/*.utt')
+    outputs.files inputs.files.collect {
+        "${sourceSets.raw.output.resourcesDir}/cmu_us_slt_arctic/text/${it.name.replace('.utt', '.txt')}"
+    }
+    doLast {
+        [inputs.files as List, outputs.files as List].transpose().each { inFile, outFile ->
+            inFile.eachLine {
+                if (it.startsWith('Features')) {
+                    outFile.text = it.split(/("\\"|\\"")/)[1]
+                }
+            }
+        }
+    }
+}
+
 task processEHMMSources(type: Copy) {
     from 'src/ehmm'
     into "$buildDir/ehmm"
